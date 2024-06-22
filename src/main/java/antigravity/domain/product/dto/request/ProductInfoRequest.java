@@ -1,4 +1,4 @@
-package antigravity.model.request;
+package antigravity.domain.product.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

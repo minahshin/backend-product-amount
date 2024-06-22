@@ -1,9 +1,9 @@
-package antigravity.service;
+package antigravity.domain.product.service;
 
-import antigravity.domain.entity.Product;
-import antigravity.model.request.ProductInfoRequest;
-import antigravity.model.response.ProductAmountResponse;
-import antigravity.repository.ProductRepository;
+import antigravity.domain.product.entity.Product;
+import antigravity.domain.product.dto.request.ProductInfoRequest;
+import antigravity.domain.product.dto.response.ProductAmountResponse;
+import antigravity.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
