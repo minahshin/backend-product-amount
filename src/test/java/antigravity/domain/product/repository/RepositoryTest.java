@@ -1,5 +1,7 @@
 package antigravity.domain.product.repository;
 
+import antigravity.config.TestJpaConfig;
+import antigravity.domain.product.MockItemGenerator;
 import antigravity.domain.product.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,37 +100,19 @@ public class RepositoryTest {
 
     // TODO : Consider moving these generation methods due to testing service layer
     public static List<Promotion> generatePromotionList() {
-        Promotion percentCoupon = Promotion.builder()
-                .id(1L)
-                .promotionType(PromotionType.COUPON)
-                .name("24% 할인 쿠폰")
-                .discountType(DiscountType.PERCENT)
-                .discountValue(24)
-                .useStartedAt(LocalDate.of(2023, 3, 1))
-                .useEndedAt(LocalDate.of(2025, 3, 1))
-                .build();
+        List<Promotion> promotions = new ArrayList<>(MockItemGenerator.generatePromotions());
 
-        Promotion wonCode = Promotion.builder()
-                .id(2L)
-                .promotionType(PromotionType.CODE)
-                .name("2000원 할인 쿠폰")
-                .discountType(DiscountType.WON)
-                .discountValue(2000)
-                .useStartedAt(LocalDate.of(2023, 3, 1))
-                .useEndedAt(LocalDate.of(2025, 3, 1))
-                .build();
+        promotions.add(Promotion.builder()
+                        .id(3L)
+                        .promotionType(PromotionType.CODE)
+                        .name("2000원 할인 쿠폰")
+                        .discountType(DiscountType.WON)
+                        .discountValue(2000)
+                        .useStartedAt(LocalDate.of(2023, 3, 1))
+                        .useEndedAt(LocalDate.of(2024, 3, 1))
+                        .build());
 
-        Promotion expiredPromotion = Promotion.builder()
-                .id(3L)
-                .promotionType(PromotionType.CODE)
-                .name("2000원 할인 쿠폰")
-                .discountType(DiscountType.WON)
-                .discountValue(2000)
-                .useStartedAt(LocalDate.of(2023, 3, 1))
-                .useEndedAt(LocalDate.of(2024, 3, 1))
-                .build();
-
-        return List.of(percentCoupon, wonCode, expiredPromotion);
+        return promotions;
     }
 
     public static List<PromotionProducts> generatePromotionProducts() {

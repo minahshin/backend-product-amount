@@ -1,5 +1,7 @@
-package antigravity.domain.product.repository;
+package antigravity.config;
 
+import antigravity.domain.product.repository.CustomPromotionRepository;
+import antigravity.domain.product.repository.CustomPromotionRepositoryImpl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
