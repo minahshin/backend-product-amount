@@ -18,6 +18,14 @@ spring:
     level:
       org:
         springframework.web: debug
+
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      show-sql: true
+#      ddl-auto: create
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
   sql:
     init:
       schema-locations: classpath*:/${database}/schema.sql

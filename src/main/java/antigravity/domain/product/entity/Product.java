@@ -1,12 +1,24 @@
 package antigravity.domain.product.entity;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Builder
+import javax.persistence.*;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@ToString
+@Getter
 public class Product {
-    private int id;
+
+    @Id
+    @Column(unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String name;
-    private int price;
+
+    @Column(nullable = false)
+    private Integer price;
 }
