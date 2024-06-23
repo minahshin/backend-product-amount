@@ -4,5 +4,5 @@ import antigravity.domain.product.dto.request.ProductInfoRequest;
 import antigravity.domain.product.dto.response.ProductAmountResponse;
 
 public interface ProductDiscountService {
-    ProductAmountResponse calculateProductAmount(ProductInfoRequest request);
+    ProductAmountResponse applyPromotionsToProduct(ProductInfoRequest request);
 }

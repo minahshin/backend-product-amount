@@ -22,14 +22,14 @@ public class ProductDiscountController {
     //상품 가격 추출 api
     @GetMapping("/amount")
     public ResponseEntity<ProductAmountResponse> getProductAmount() {
-        ProductAmountResponse response = discountService.calculateProductAmount(getParam());
+        ProductAmountResponse response = discountService.applyPromotionsToProduct(getParam());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private ProductInfoRequest getParam() {
         List<Long> couponIds = List.of(1L, 2L);
         ProductInfoRequest request = ProductInfoRequest.builder()
-                .productId(1)
+                .productId(1L)
                 .couponIds(couponIds)
                 .build();
 
