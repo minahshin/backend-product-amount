@@ -5,6 +5,7 @@ import antigravity.global.exception.code.ValidationErrorCode;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,15 @@ public class ErrorResponse {
                         .name(errorCode.name())
                         .parameter(errorCode.getParameter())
                         .message(errorCode.getMessage())
+                        .build());
+    }
+
+    public static ResponseEntity<ErrorResponse> otherErrorToResponseEntity(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .name(e.getClass().getName())
+                        .message(e.getMessage())
                         .build());
     }
 }

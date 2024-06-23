@@ -26,3 +26,10 @@
    - 할인 계산 중, 10000원 아래인 경우에 먼저 return 하려고 하였으나, 반복 작업이 생겨 promotion을 모두 계산 하도록 구현했습니다.
 3. interface에 MIN_VALUE를 따로 두어 정책적으로 최솟값이 바뀌는 경우 빠르게 대응하도록 구현했습니다.
 
+## Controller
+### ProductDiscountController
+1. request parameter를 ModelAttribute로 바인딩하여 깔끔하게 받을 수 있도록 구현했습니다.
+2. 보낼 수 있는 형식은 아래와 같습니다.
+```
+http://localhost:8089/products/amount?productId=1&couponIds=1,2
+```

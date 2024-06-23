@@ -27,12 +27,21 @@ public class GlobalExceptionHandler {
 
         int lastIndex = bindingResult.getAllErrors().size() - 1;
         FieldError fieldError = (FieldError) bindingResult.getAllErrors().get(lastIndex);
+
         ValidationErrorCode validationErrorCode = ValidationErrorCode.builder()
                 .message(fieldError.getDefaultMessage())
                 .parameter(fieldError.getField())
                 .build();
+
         log.error("[Binding Error] : Field = {}, Message = {}", fieldError.getDefaultMessage(), fieldError.getField());
 
         return ErrorResponse.validErrorToResponseEntity(validationErrorCode);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleOtherException(Exception e){
+        log.error("[Unspecified Error] : Message = {}", e.getMessage());
+
+        return ErrorResponse.otherErrorToResponseEntity(e);
     }
 }
