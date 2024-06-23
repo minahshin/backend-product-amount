@@ -33,7 +33,7 @@ public class RepositoryTest {
 
     @BeforeEach
     void init(){
-        productRepository.save(new Product(1L, "Mock Item", 10000));
+        productRepository.save(MockItemGenerator.generateMockProduct(10000));
         promotionRepository.saveAllAndFlush(generatePromotionList());
         promotionProductRepository.saveAllAndFlush(generatePromotionProducts());
     }

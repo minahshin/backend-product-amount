@@ -1,11 +1,18 @@
 package antigravity.domain.product;
 
-import antigravity.domain.product.entity.*;
+import antigravity.domain.product.entity.DiscountType;
+import antigravity.domain.product.entity.Product;
+import antigravity.domain.product.entity.Promotion;
+import antigravity.domain.product.entity.PromotionType;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class MockItemGenerator {
+
+    public static Product generateMockProduct(int price) {
+        return new Product(1L, "Mock Item", price);
+    }
 
     public static List<Promotion> generatePromotions() {
         Promotion percentCoupon = Promotion.builder()
