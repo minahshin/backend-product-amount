@@ -9,7 +9,6 @@ import antigravity.domain.product.repository.ProductRepository;
 import antigravity.domain.product.repository.PromotionProductRepository;
 import antigravity.domain.product.repository.PromotionRepository;
 import antigravity.domain.product.service.calculator.DiscountCalculator;
-import antigravity.global.config.TimeConfig;
 import antigravity.global.exception.AntigravityException;
 import antigravity.global.exception.code.ProductErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
     private final PromotionRepository promotionRepository;
     private final PromotionProductRepository promoProdRepository;
     private final DiscountCalculator calculator;
-    private final TimeConfig timeConfig;
+    private final Clock clock;
 
     @Transactional(readOnly = true)
     @Override
@@ -51,7 +51,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
                 .map(PromotionId::getPromotionId)
                 .collect(Collectors.toList());
 
-        List<Promotion> promotionList = promotionRepository.getValidPromotionsFromId(candidatePromoList, LocalDate.now(timeConfig.clock()));
+        List<Promotion> promotionList = promotionRepository.getValidPromotionsFromId(candidatePromoList, LocalDate.now(clock));
 
         log.info("[Product Discount] Get {} promotions from request", promotionList.size());
 
