@@ -2,7 +2,9 @@ package antigravity.domain.product.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -13,7 +15,6 @@ public class Product {
 
     @Id
     @Column(unique = true)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

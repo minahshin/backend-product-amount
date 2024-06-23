@@ -1,4 +1,4 @@
-package antigravity.service;
+package antigravity.domain.product.service;
 
 import org.junit.jupiter.api.Test;
 

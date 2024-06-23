@@ -7,14 +7,12 @@ import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @ToString
 @Getter
 public class Promotion {
 
     @Id
     @Column(unique = true)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -35,4 +33,16 @@ public class Promotion {
 
     @Column(nullable = false)
     private LocalDate useEndedAt; // 쿠폰 사용가능 종료 기간
+
+    @Builder
+    public Promotion(Long id, PromotionType promotionType, String name, DiscountType discountType,
+                     Integer discountValue, LocalDate useStartedAt, LocalDate useEndedAt) {
+        this.id = id;
+        this.promotionType = promotionType;
+        this.name = name;
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.useStartedAt = useStartedAt;
+        this.useEndedAt = useEndedAt;
+    }
 }
