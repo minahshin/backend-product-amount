@@ -38,16 +38,37 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
 
         log.info("[Product Discount] Requested applying promotion to product id : {}", request.getProductId());
 
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new AntigravityException(ProductErrorCode.NOT_EXIST_PRODUCT_ID,
-                        Map.of("id", String.valueOf(request.getProductId()))));
+        Product product = getProductFromId(request.getProductId());
 
-        if(request.getCouponIds() == null || request.getCouponIds().isEmpty() || product.getPrice() <= 10000) {
-            log.debug("[Product Discount] Coupon isn't chosen or price is under 10,000 WON.");
+        if(!isCouponUsable(product.getPrice(), request.getCouponIds())) {
+            log.debug("[Product Discount] Coupon isn't chosen or price is under {} WON.", DiscountCalculator.MIN_PRICE);
             return new ProductAmountResponse(product);
         }
 
-        List<Long> candidatePromoList = promoProdRepository.findByProductIdAndPromotionIdIn(product.getId(), request.getCouponIds()).stream()
+        List<Promotion> promotions = getValidPromotions(product.getId(), request.getCouponIds());
+
+        if(promotions.isEmpty()) {
+            log.debug("[Product Discount] Cannot apply promotions.");
+            return new ProductAmountResponse(product);
+        }
+
+        return ProductAmountResponse.builder()
+                .product(product)
+                .finalPrice(calculator.calculateFinalPrice(product.getPrice(), promotions))
+                .build();
+    }
+
+    private Product getProductFromId(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new AntigravityException(ProductErrorCode.NOT_EXIST_PRODUCT_ID, Map.of("id", String.valueOf(productId))));
+    }
+
+    private boolean isCouponUsable(int price, List<Long> couponIds) {
+        return (couponIds != null && !couponIds.isEmpty() && price > DiscountCalculator.MIN_PRICE);
+    }
+
+    private List<Promotion> getValidPromotions(Long productId, List<Long> couponIds) {
+        List<Long> candidatePromoList = promoProdRepository.findByProductIdAndPromotionIdIn(productId, couponIds).stream()
                 .map(PromotionId::getPromotionId)
                 .collect(Collectors.toList());
 
@@ -55,14 +76,6 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
 
         log.info("[Product Discount] Get {} promotions from request", promotionList.size());
 
-        if(promotionList.isEmpty()) {
-            log.debug("[Product Discount] Cannot apply promotions.");
-            return new ProductAmountResponse(product);
-        }
-
-        return ProductAmountResponse.builder()
-                .product(product)
-                .finalPrice(calculator.calculateFinalPrice(product.getPrice(), promotionList))
-                .build();
+        return promotionList;
     }
 }
