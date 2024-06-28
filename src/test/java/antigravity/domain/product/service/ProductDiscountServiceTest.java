@@ -8,7 +8,6 @@ import antigravity.domain.product.entity.PromotionId;
 import antigravity.domain.product.repository.ProductRepository;
 import antigravity.domain.product.repository.PromotionProductRepository;
 import antigravity.domain.product.repository.PromotionRepository;
-import antigravity.domain.product.service.calculator.DiscountCalculator;
 import antigravity.global.exception.AntigravityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,9 +41,6 @@ class ProductDiscountServiceTest {
     private PromotionProductRepository promoProdRepository;
 
     @Mock
-    private DiscountCalculator calculator;
-
-    @Mock
     private Clock clock;
 
     @InjectMocks
@@ -75,9 +71,6 @@ class ProductDiscountServiceTest {
         List<Promotion> mockPromotionList = MockItemGenerator.generatePromotions();
         when(promotionRepository.getValidPromotionsFromId(List.of(1L, 2L), LocalDate.now(clock)))
                 .thenReturn(mockPromotionList);
-
-        when(calculator.calculateFinalPrice(200000, mockPromotionList))
-                .thenReturn(150000);
 
         // when
         ProductAmountResponse applied = productDiscountService.applyPromotionsToProduct(dummyRequest());

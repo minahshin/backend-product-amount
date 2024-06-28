@@ -8,7 +8,7 @@ import antigravity.domain.product.entity.PromotionId;
 import antigravity.domain.product.repository.ProductRepository;
 import antigravity.domain.product.repository.PromotionProductRepository;
 import antigravity.domain.product.repository.PromotionRepository;
-import antigravity.domain.product.service.calculator.DiscountCalculator;
+import antigravity.domain.product.service.calculator.Calculator;
 import antigravity.global.exception.AntigravityException;
 import antigravity.global.exception.code.ProductErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,6 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
     private final ProductRepository productRepository;
     private final PromotionRepository promotionRepository;
     private final PromotionProductRepository promoProdRepository;
-    private final DiscountCalculator calculator;
     private final Clock clock;
 
     @Transactional(readOnly = true)
@@ -41,7 +40,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
         Product product = getProductFromId(request.getProductId());
 
         if(!isCouponUsable(product.getPrice(), request.getCouponIds())) {
-            log.debug("[Product Discount] Coupon isn't chosen or price is under {} WON.", DiscountCalculator.MIN_PRICE);
+            log.debug("[Product Discount] Coupon isn't chosen or price is under {} WON.", Calculator.MIN_PRICE);
             return new ProductAmountResponse(product);
         }
 
@@ -54,7 +53,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
 
         return ProductAmountResponse.builder()
                 .product(product)
-                .finalPrice(calculator.calculateFinalPrice(product.getPrice(), promotions))
+                .finalPrice(applyAndTruncate(product.getPrice(), getTotalDiscount(product.getPrice(), promotions)))
                 .build();
     }
 
@@ -64,7 +63,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
     }
 
     private boolean isCouponUsable(int price, List<Long> couponIds) {
-        return (couponIds != null && !couponIds.isEmpty() && price > DiscountCalculator.MIN_PRICE);
+        return (couponIds != null && !couponIds.isEmpty() && price > Calculator.MIN_PRICE);
     }
 
     private List<Promotion> getValidPromotions(Long productId, List<Long> couponIds) {
@@ -77,5 +76,20 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
         log.info("[Product Discount] Get {} promotions from request", promotionList.size());
 
         return promotionList;
+    }
+
+    private double getTotalDiscount(int originalPrice, List<Promotion> promotions) {
+        return promotions.stream()
+                .map(promotion -> new Calculator(promotion.getDiscountType().getCalculator())
+                        .doCalculate(originalPrice, promotion.getDiscountValue()))
+                .reduce(0D, Double::sum);
+    }
+
+    private int applyAndTruncate(int originalPrice, double totalDiscounted) {
+        return Math.max(Calculator.MIN_PRICE, truncate(originalPrice - totalDiscounted));
+    }
+
+    private int truncate(double price) {
+        return (int) (price / Calculator.TRUNCATE) * Calculator.TRUNCATE;
     }
 }
