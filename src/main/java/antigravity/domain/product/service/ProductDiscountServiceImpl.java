@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ProductDiscountServiceImpl implements ProductDiscountService{
 
     @Transactional(readOnly = true)
     @Override
-    public ProductAmountResponse applyPromotionsToProduct(ProductInfoRequest request) {
+    public ProductAmountResponse applyPromotionsToProduct(@NotNull ProductInfoRequest request) {
 
         log.info("[Product Discount] Requested applying promotion to product id : {}", request.getProductId());
 
